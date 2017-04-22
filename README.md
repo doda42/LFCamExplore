@@ -1,5 +1,5 @@
 # LFCamExplore
-A MATLAB tool for building intuition in the design space of plenoptic cameras
+A MATLAB tool for building intuition in the design space of plenoptic cameras<br>
 Copyright (c) 2017 by Donald G. Dansereau
 
 ![thumb](Thumbs/GUI_v0.1.0.png)
