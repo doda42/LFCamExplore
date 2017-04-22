@@ -1,0 +1,13 @@
+- cam metrics are beta, angular samples is incorrect for some cases
+
+- redo solver w/ lens fixed at 0 instead of sensor?
+
+- don't overwrite display options on load  
+
+- diffraction limit on pixels
+
+- log scales for wide-ranging parameters
+
+- automatically lay out windows on start
+
+- add examples to doc

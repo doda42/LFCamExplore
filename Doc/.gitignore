@@ -1,0 +1,13 @@
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.spl
+*.toc
+*.glg
+*.gls
+*.ist
+*.brf
+*~
+CamDesign.pdf

@@ -1,0 +1,10 @@
+{
+	"CameraModel": "Plen2",
+	"FocalDepth_m": 1.1,
+	"Plen2FocRatio": 1.90959,
+	"PixelsPerLenslet": 100,
+	"MainLensFocal_m": 0.003049993,
+	"LensletFocal_m": 0.003,
+	"NPixels": 3000,
+	"PixelSize_m": 1e-06
+}

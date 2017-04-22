@@ -1,0 +1,15 @@
+{
+	"CameraModel": "Plen1",
+	"FocalDepth_m": 1,
+	"Plen2FocRatio": 1,
+	"PixelsPerLenslet": 10,
+	"MainLensFocal_m": 0.0064,
+	"LensletFocal_m": 2.7e-05,
+	"NPixels": 50,
+	"PixelSize_m": 1.4e-06,
+	"GeneratedByInfo": {
+		"mfilename": "LFCamExploreGUI",
+		"time": "21Apr2017_174616",
+		"VersionStr": "v0.1.0 in development"
+	}
+}
