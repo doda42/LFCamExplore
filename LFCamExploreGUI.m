@@ -4,7 +4,7 @@
 % resulting changes in sampling patterns.  A few example configurations are included, and a tutorial
 % on sampling patterns is included in the accompanying documentation.
 % 
-% Please see LFCamExploreGUI.m and LFCamExplore.pdf for further information.
+% Please see LFCamExplore.pdf for further information.
 
 % Copyright (c) 2017 Donald G. Dansereau
 
