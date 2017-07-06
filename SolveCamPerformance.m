@@ -14,7 +14,9 @@
 
 % Copyright (c) 2017 Donald G. Dansereau
 
-function CamPerformance = SolveCamPerformance( CamInfo )
+function [CamPerformance, CamInfo] = SolveCamPerformance( CamInfo )
+
+CamInfo = LFDefaultField('CamInfo','Wavelen', 560e-9);  % default wavelent for diffraction limit calc., yellow/green
 
 %---Check specs---
 CamPerformance.TheoreticFOV_deg = 2*atan( CamInfo.SensorSize_m/2 /(CamInfo.MainLensDist_m - CamInfo.LensletDist_m) ) * 180/pi;
@@ -53,3 +55,9 @@ CamPerformance.NaiveFarFocalLimit_m = CamInfo.FocalDepth_m / max(0,(1-PixHeight_
 % H = CamInfo.MainLensFocal_m^2 / (CamPerformance.MainLensFNumber * CamInfo.PixelSize_m)
 % Dn = H * CamInfo.FocalDepth_m / (H + CamInfo.FocalDepth_m)
 % Df = H * CamInfo.FocalDepth_m / (H - CamInfo.FocalDepth_m)
+
+%---Diffraction limit check---
+% there's much more to do here, this is a first-order check of the minimum spot size at the sensor
+% due to diffraction at the lenslet, under small-angle approximation
+% based on d = 1.22 * wavelength * dist_to_aperture / aperture_diam
+CamPerformance.MinSpotSize = 1.22 * CamInfo.Wavelen * CamInfo.LensletDist_m / CamInfo.LensletDiam_m;
