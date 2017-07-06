@@ -57,7 +57,9 @@ CamPerformance.NaiveFarFocalLimit_m = CamInfo.FocalDepth_m / max(0,(1-PixHeight_
 % Df = H * CamInfo.FocalDepth_m / (H - CamInfo.FocalDepth_m)
 
 %---Diffraction limit check---
-% there's much more to do here, this is a first-order check of the minimum spot size at the sensor
-% due to diffraction at the lenslet, under small-angle approximation
-% based on d = 1.22 * wavelength * dist_to_aperture / aperture_diam
-CamPerformance.MinSpotSize = 1.22 * CamInfo.Wavelen * CamInfo.LensletDist_m / CamInfo.LensletDiam_m;
+% There's much more to do here, this is a first-order check of the minimum resolvable detail at the sensor
+% due to diffraction at the lenslet, under a small-angle approximation and based on 
+% d = 1.22 * wavelength * dist_to_aperture / aperture_diam, 
+% where d is the first null of the airy disk, i.e. the minimum resolvable detail size. Note that for
+% plen2 cameras with plen2 ratios of 1 and smaller, performance will be worse than reported.
+CamPerformance.DiffractionLimitAtSensor_m = 1.22 * CamInfo.Wavelen * CamInfo.LensletDist_m / CamInfo.LensletDiam_m;
