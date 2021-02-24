@@ -31,18 +31,22 @@ FirstRun = isempty(UserData);
 
 %---on first run set window position---
 if( FirstRun )
+	clf
+
 	drawnow
 	movegui(FigHandle,'north');
+	
+	hold on
+	grid on
+	xlabel('s (m)');
+	ylabel('u (m)');
+	title('Sampling Pattern');
+	
 	set(FigHandle, 'UserData', 'Setup complete')
 end
 
 %---Clear / set up figure---
 cla
-hold on
-grid on
-xlabel('s (m)');
-ylabel('u (m)');
-title('Sampling Pattern');
 
 % draw pixel patches
 for( iPix = 1:CamInfo.PixelsPerLenslet )
@@ -61,11 +65,12 @@ for( iPix = 1:CamInfo.PixelsPerLenslet )
 end
 
 %---autoscale display---
-ax = axis;
 if( DispOptions.AxesFollowSU )
 	ax(1:2) = max(abs([SUMarginal1(1,:), SUMarginal2(1,:)])) .* [-1.1,1.1];
 	ax(3:4) = max(abs([SUMarginal1(2,:), SUMarginal2(2,:)])) .* [-1.1,1.1];
 	axis(ax);
+else
+	ax = axis;
 end
 
 if( DispOptions.DepthRefsEnable )
