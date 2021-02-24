@@ -12,7 +12,7 @@
 % 
 % Please see LFCamExploreGUI.m and LFCamExplore.pdf for further information.
 
-% Copyright (c) 2017 Donald G. Dansereau
+% Copyright (c) 2017-2021 Donald G. Dansereau
 
 function [CamPerformance, CamInfo] = SolveCamPerformance( CamInfo )
 

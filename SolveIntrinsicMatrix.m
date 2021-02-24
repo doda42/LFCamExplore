@@ -16,7 +16,7 @@
 % 
 % Please see LFCamExploreGUI.m and LFCamExplore.pdf for further information.
 
-% Copyright (c) 2017 Donald G. Dansereau
+% Copyright (c) 2017-2021 Donald G. Dansereau
 
 function [CamIntrins, SUCenters, SUMarginal1, SUMarginal2, DispOptions] = ...
 	SolveIntrinsicMatrix( CamInfo, DispOptions )

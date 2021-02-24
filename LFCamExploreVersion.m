@@ -5,7 +5,7 @@
 % 
 % Please see LFCamExploreGUI.m and LFCamExplore.pdf for further information.
 
-% Copyright (c) 2017 Donald G. Dansereau
+% Copyright (c) 2017-2021 Donald G. Dansereau
 
 function VersionStr = LFCamExploreVersion
 VersionStr = 'v0.1.0 in development';
