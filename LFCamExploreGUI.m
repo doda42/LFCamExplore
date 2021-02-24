@@ -101,14 +101,23 @@ end
 function UIElements = SetupGUI( GuiOptions, CamInfo )
 
 %---Set up the main window---
-hFig = LFFigure(101);
-set(hFig, 'menubar', 'none');
+FigHandle = LFFigure(101);
+
+%---Detect first run so we can set up window---
+UserData = get(FigHandle, 'UserData');  % matlab windows have no user data on creation
+FirstRun = isempty(UserData);
+
 clf
+set(FigHandle, 'menubar', 'none');
 axes('Units','pixels');
 colormap gray
 axis off
 
-%---
+%---window size / pos on first run---
+if( FirstRun )
+	movegui( FigHandle, 'northwest' );
+end
+
 WinPos = get(gca,'OuterPosition');
 YPos = WinPos(4);
 ButtonHeight = 25;
@@ -239,6 +248,11 @@ set(hUVPos, 'Callback', UpdateFunc);
 set(hAxesFollowSU, 'Callback', UpdateFunc);
 set(hSaveButton, 'Callback', SaveButtonFunc);
 set(hLoadButton, 'Callback', LoadButtonFunc);
+
+%---
+if( FirstRun )
+	set(FigHandle, 'UserData', 'Setup complete')
+end
 
 end
 

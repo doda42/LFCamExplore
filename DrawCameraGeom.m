@@ -20,9 +20,28 @@ FigHandle = LFFigure(102);
 UserData = get(FigHandle, 'UserData');  % matlab windows have no user data on creation
 FirstRun = isempty(UserData);
 
-%---window size / pos on first run---
+%---window size / pos and legend on first run---
 if( FirstRun )
-	%---change shape of window to 4-wide---
+	%---draw the legend---
+	subplot(144);
+	cla
+	hold on
+	
+	OverviewColours = {'w','c','wo','m','g:','g','y'};
+	LegendTxt = {'Sensor','Lenslets','Plen2 focus', 'Main lens', 'ST plane','ST coverage', 'UV plane'};
+	
+	for( iCol = 1:length(OverviewColours) )
+		CurCol = OverviewColours{iCol};
+		CurTxt = LegendTxt{iCol};
+		plot( [0.1,0.4], -iCol.*[1,1], CurCol, 'linewidth',2 );
+	end
+	axis([-10,0,-10,0]);
+	axis off
+	legend( LegendTxt );
+
+	%---change shape of window to 5-wide---
+	drawnow % needed to make the window establish its initial bounds
+	DefaultOuterDims = get(FigHandle,'OuterPosition'); % record default window size including toolbars
 	WinPos = get(FigHandle,'Position');
 	WinPos(3) = WinPos(4) * 5;
 	
@@ -34,9 +53,18 @@ if( FirstRun )
 		WinScale = ScreenSize(3)/WinWidth * 0.8;
 		WinPos(3:4) = floor(WinPos(3:4) * WinScale);
 	end
-	% and center the window horizontally
+	% center the window horizontally and set to bottom of window
 	WinPos(1) = floor((ScreenSize(3) - WinPos(3))/2) + 1;
+	WinPos(2) = 0;
 	set(FigHandle,'Position', WinPos);
+	
+	% get new window outer dims including toolbars, and shift to just below s,u display
+	% assumes s,u display maintained its default vertical size DefaultOuterDims(4)
+	ScaledOuterDims = get(FigHandle,'OuterPosition');
+	WinPos(2) = ScreenSize(4) - ScaledOuterDims(4) - DefaultOuterDims(4);
+	set(FigHandle,'Position', WinPos);
+
+	set(FigHandle, 'UserData', 'Setup complete')
 end
 
 %---scale constants adjust with window resize---
@@ -55,8 +83,8 @@ if( ~isempty(CamInfo.Plen2FocDist_m) )
 end
 
 ax=axis;
-ax(1) = min([0, CamInfo.LensletDist_m, Plen2Dist]).*1.1;
 ax(2) = max([CamInfo.LensletDist_m, Plen2Dist]).*1.1;
+ax(1) = min([-ax(2)/50, CamInfo.LensletDist_m, Plen2Dist]).*1.1;
 ax(3:4) = CamInfo.SensorSize_m/2 .* [-1.1,1.1];
 axis(ax);
 if( abs(CamIntrins.STPlanePos_m) <= ax(2))
@@ -69,10 +97,6 @@ end
 
 xlabel('z (m)');
 ylabel('x (m)');
-
-ax=axis;
-ax(1) = min(ax(1),-ax(2)/50);
-axis(ax);
 title('Microlenses');
 
 %---Draw main lens geom---
@@ -145,26 +169,5 @@ ax(1) = min(ax(1),-ax(2)/50);
 ax(2) = ax(2).*1.05;
 axis(ax);
 title('Scene');
-
-if( FirstRun )
-	%---now draw the legend---
-	subplot(144);
-	cla
-	hold on
-	
-	OverviewColours = {'w','c','wo','m','g:','g','y'};
-	LegendTxt = {'Sensor','Lenslets','Plen2 focus', 'Main lens', 'ST plane','ST coverage', 'UV plane'};
-	
-	for( iCol = 1:length(OverviewColours) )
-		CurCol = OverviewColours{iCol};
-		CurTxt = LegendTxt{iCol};
-		plot( [0.1,0.4], -iCol.*[1,1], CurCol, 'linewidth',2 );
-	end
-	axis([-10,0,-10,0]);
-	axis off
-	legend( LegendTxt );
-	
-	set(FigHandle, 'UserData', 'Setup complete')
-end
 
 end

@@ -23,7 +23,20 @@ DepthRefColors = [ ...
 
 
 %---draw in s,u space---
-LFFigure(202);
+FigHandle = LFFigure(202);
+
+%---Detect first run so we can set up window---
+UserData = get(FigHandle, 'UserData');  % matlab windows have no user data on creation
+FirstRun = isempty(UserData);
+
+%---on first run set window position---
+if( FirstRun )
+	drawnow
+	movegui(FigHandle,'north');
+	set(FigHandle, 'UserData', 'Setup complete')
+end
+
+%---Clear / set up figure---
 cla
 hold on
 grid on
@@ -43,7 +56,6 @@ for( iPix = 1:CamInfo.PixelsPerLenslet )
 		Sat = 0.8*(2-mod(iPix,2))/2;
 		DrawColor = hsv2rgb( Hue, Sat, Val );
 		
-		LFFigure(202);
 		patch( DrawPts(1,:), DrawPts(2,:), DrawColor, 'LineStyle','none' );
 	end
 end
