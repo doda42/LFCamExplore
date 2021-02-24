@@ -11,7 +11,7 @@
 
 % Copyright (c) 2017 Donald G. Dansereau
 
-function DrawCameraGeom( CamInfo, CamIntrins, SUSamples )
+function DrawCameraGeom( CamInfo, CamIntrins, SUSamples, DispOptions )
 
 %---Draw camera geom---
 FigHandle = LFFigure(102);
@@ -22,6 +22,30 @@ FirstRun = isempty(UserData);
 
 %---window size / pos and legend on first run---
 if( FirstRun )
+	%---set up labels, axes---
+	% doing this only once at creation improves speed
+	subplot(141);
+	cla
+	hold on
+	grid on
+	xlabel('z (m)');
+	ylabel('x (m)');
+	title('Microlenses');
+	
+	subplot(142);
+	cla
+	hold on
+	grid on
+	xlabel('z (m)');
+	title('Main Lens');
+	
+	subplot(143);
+	cla
+	hold on
+	grid on
+	xlabel('z (m)');
+	title('Scene');
+
 	%---draw the legend---
 	subplot(144);
 	cla
@@ -69,10 +93,8 @@ end
 
 %---scale constants adjust with window resize---
 subplot(141);
-
 cla
-hold on
-grid on
+
 plot([0,0],CamInfo.SensorSize_m.*[-0.5,0.5],'w-', 'linewidth',2);  % sensor
 plot(CamInfo.LensletDist_m.*[1,1],CamInfo.SensorSize_m.*[-0.5,0.5],'c', 'linewidth',2); % lenslets
 
@@ -82,11 +104,12 @@ if( ~isempty(CamInfo.Plen2FocDist_m) )
 	plot(CamInfo.Plen2FocDist_m.*[1,1],[0,0],'wo'); % virtual image within camera
 end
 
-ax=axis;
 ax(2) = max([CamInfo.LensletDist_m, Plen2Dist]).*1.1;
 ax(1) = min([-ax(2)/50, CamInfo.LensletDist_m, Plen2Dist]).*1.1;
 ax(3:4) = CamInfo.SensorSize_m/2 .* [-1.1,1.1];
-axis(ax);
+if( ~DispOptions.FastRender )
+	axis(ax);
+end
 if( abs(CamIntrins.STPlanePos_m) <= ax(2))
 	MaxS = max(SUSamples(1,:));
 	MaxS = min(MaxS, max(ax(3), -ax(4)));
@@ -95,16 +118,10 @@ if( abs(CamIntrins.STPlanePos_m) <= ax(2))
 	plot(CamIntrins.STPlanePos_m.*[1,1], MaxS.*[-1,1], 'g-', 'linewidth',2)
 end
 
-xlabel('z (m)');
-ylabel('x (m)');
-title('Microlenses');
-
 %---Draw main lens geom---
 subplot(142);
-
 cla
-hold on
-grid on
+
 plot([0,0],CamInfo.SensorSize_m.*[-0.5,0.5],'w-', 'linewidth',2);  % sensor
 plot(CamInfo.LensletDist_m.*[1,1],CamInfo.SensorSize_m.*[-0.5,0.5],'c', 'linewidth',2); % lenslets
 
@@ -114,32 +131,23 @@ end
 
 plot(CamInfo.MainLensDist_m.*[1,1],CamInfo.MainLensDiam_m.*[-0.5,0.5],'m', 'linewidth',2); % main lens
 
-ax=axis;
-ax(1) = min([0, CamInfo.LensletDist_m, Plen2Dist]).*1.1;
 ax(2) = CamInfo.MainLensDist_m + CamInfo.MainLensFocal_m.*1.1;
+ax(1) = min([-ax(2)/50, CamInfo.LensletDist_m, Plen2Dist]).*1.1;
 ax(3:4) = CamInfo.MainLensDiam_m/2 .* [-1.1,1.1];
-axis(ax);
+if( ~DispOptions.FastRender )
+	axis(ax);
+end
 if( abs(CamIntrins.STPlanePos_m) <= ax(2))
 	MaxS = max(SUSamples(1,:));
 	
 	plot(CamIntrins.STPlanePos_m.*[1,1], ax(3:4), 'g:', 'linewidth',1);
 	plot(CamIntrins.STPlanePos_m.*[1,1], MaxS.*[-1,1], 'g-', 'linewidth',2)
 end
-xlabel('z (m)');
-% 	ylabel('x (m)');
-
-ax=axis;
-ax(1) = min(ax(1),-ax(2)/50);
-axis(ax);
-
-title('Main Lens');
 
 %---Draw scene geom---
 subplot(143);
-
 cla
-hold on
-grid on
+
 plot([0,0],CamInfo.SensorSize_m.*[-0.5,0.5],'w-', 'linewidth',2);  % sensor
 plot(CamInfo.LensletDist_m.*[1,1],CamInfo.SensorSize_m.*[-0.5,0.5],'c', 'linewidth',2); % lenslets
 
@@ -156,18 +164,11 @@ plot(CamIntrins.STPlanePos_m.*[1,1], MaxU.*[-1,1], 'g:', 'linewidth',1)
 plot(CamIntrins.STPlanePos_m.*[1,1], MaxS.*[-1,1], 'g-', 'linewidth',2)
 plot(CamIntrins.UVPlanePos_m.*[1,1], MaxU.*[-1,1], 'y-', 'linewidth',2)
 
-ax=axis;
-ax(1) = min([0, CamInfo.LensletDist_m, Plen2Dist, CamIntrins.UVPlanePos_m, CamIntrins.STPlanePos_m]).*1.1;
-ax(2) = max([CamIntrins.STPlanePos_m, CamIntrins.UVPlanePos_m, CamInfo.MainLensDist_m]) .* 1.1;
-ax(3:4) = max([MaxS, MaxU, CamInfo.MainLensDiam_m/2]) .* [-1.1,1.1];
-axis(ax);
-
-xlabel('z (m)');
-
-ax=axis;
-ax(1) = min(ax(1),-ax(2)/50);
-ax(2) = ax(2).*1.05;
-axis(ax);
-title('Scene');
+if( ~DispOptions.FastRender )
+	ax(2) = max([CamIntrins.STPlanePos_m, CamIntrins.UVPlanePos_m, CamInfo.MainLensDist_m]) .* 1.1;
+	ax(1) = min([-ax(2)/50, CamInfo.LensletDist_m, Plen2Dist, CamIntrins.UVPlanePos_m, CamIntrins.STPlanePos_m]).*1.1;
+	ax(3:4) = max([MaxS, MaxU, CamInfo.MainLensDiam_m/2]) .* [-1.1,1.1];
+	axis(ax);
+end
 
 end

@@ -30,24 +30,30 @@ UIElements = SetupGUI( GuiOptions, CamInfo );
 
 %---Kick the GUI to update once---
 gLock = [];
-notify( UIElements(2), 'ContinuousValueChange' );
+notify( UIElements(2), 'Action' );
 
 end
 
 %-----------------------------------------------------------------
 % Main update routine, called any time a GUI object changes
-function DepthSliderCallback(~, ~, UIElements)
+function DepthSliderCallback(~, Event, UIElements)
 
 %---Update CamInfo with UI control values---
 [CamInfo, GuiOptions] = UpdateCamInfoFromUI( UIElements );
 %---Selectively enable/disable UI elements and update UI strings with CamInfo---
 UpdateUIFromCamInfo( CamInfo, UIElements, GuiOptions );
 
+if( Event.EventName == "ContinuousValueChange" )
+	FastRender = true;
+else
+	FastRender = false;
+end
+
 %---Skip rendering if we're already rendering a previous frame---
 global gLock;
 if( isempty(gLock) )
 	gLock = true;
-else
+elseif( FastRender )
 	return;
 end
 
@@ -63,13 +69,14 @@ end
 if( CamValid )
 	%---Find intrinsics and sampling patterns (including marginals) of camera---
 	[CamIntrins, SUCenters, SUMarginal1, SUMarginal2, DispOptions] = SolveIntrinsicMatrix( CamInfo, GuiOptions.IntrinDispOptions );
- 	
+ 	DispOptions.FastRender = FastRender;
+	
 	%---Draw sampling pattern in SU---
 	DispOptions = DrawSamplingSU( CamInfo, CamIntrins, SUMarginal1, SUMarginal2, DispOptions );
 
 	%---Draw Camera geometry---
-	DrawCameraGeom( CamInfo, CamIntrins, SUCenters );
-
+	DrawCameraGeom( CamInfo, CamIntrins, SUCenters, DispOptions );
+	
 	%---Estimate performance of camera---
 	CamPerformance = SolveCamPerformance( CamInfo );
 	fprintf('\n---Warning: performance metrics are experimental---\n');
@@ -278,7 +285,8 @@ UIElements = SetupGUI( GuiOptions, CamInfo );
 
 %---Kick the GUI to update once---
 gLock = [];
-notify( UIElements(2), 'ContinuousValueChange' );
+notify( UIElements(2), 'Action' );
+
 end
 
 %-------------------------------------------------------

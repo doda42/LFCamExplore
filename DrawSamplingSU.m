@@ -68,7 +68,9 @@ end
 if( DispOptions.AxesFollowSU )
 	ax(1:2) = max(abs([SUMarginal1(1,:), SUMarginal2(1,:)])) .* [-1.1,1.1];
 	ax(3:4) = max(abs([SUMarginal1(2,:), SUMarginal2(2,:)])) .* [-1.1,1.1];
-	axis(ax);
+	if( ~DispOptions.FastRender )
+		axis(ax);
+	end
 else
 	ax = axis;
 end
